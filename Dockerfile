@@ -1,52 +1,88 @@
-FROM debian:jessie
+FROM ubuntu
 
-MAINTAINER Werner Beroux <werner@beroux.com>
+MAINTAINER Trevor Joynson <docker@trevor.joynson.io>
 
-# Default configuration
-COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
-
-# Start helper script
-COPY entrypoint.sh /entrypoint.sh
-
-# Official Mopidy install for Debian/Ubuntu along with some extensions
-# (see https://docs.mopidy.com/en/latest/installation/debian/ )
-RUN set -ex \
+RUN set -xv \
  && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        curl \
-        gcc \
-        gstreamer0.10-alsa \
-        python-crypto \
- && curl -L https://apt.mopidy.com/mopidy.gpg -o /tmp/mopidy.gpg \
- && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
- && apt-key add /tmp/mopidy.gpg \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        mopidy \
-        mopidy-soundcloud \
-        mopidy-spotify \
- && curl -L https://bootstrap.pypa.io/get-pip.py | python - \
- && pip install -U six \
- && pip install \
-        Mopidy-Moped \
-        Mopidy-GMusic \
-        Mopidy-YouTube \
- && apt-get purge --auto-remove -y \
-        curl \
-        gcc \
+ && : \
+ && apt-get install -y --no-install-recommends \
+        #gstreamer0.10-alsa \
+		#alsa-base \
+		#gstreamer1.0-x \
+	    gstreamer1.0-alsa gstreamer1.0-pulseaudio \
+		#gstreamer1.0-tools \
+		#libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
+	    #xdg-user-dirs \
+ && : \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
- && chown mopidy:audio -R /var/lib/mopidy/.config \
- && chown mopidy:audio /entrypoint.sh
+ && :
 
-# Run as mopidy user
+ADD https://apt.mopidy.com/jessie.list /etc/apt/sources.list.d/mopidy.list
+ADD https://apt.mopidy.com/mopidy.gpg /tmp/mopidy.gpg
+
+RUN set -xv \
+ && apt-key add /tmp/mopidy.gpg \
+ && : \
+ && apt-get update \
+ && : \
+ && apt-get install -y --no-install-recommends \
+		mopidy \
+        $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'mpris|doc') \
+ && : \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
+ && : \
+ && chown mopidy:audio -c /var/lib/mopidy \
+ && :
+
+RUN set -xv \
+ && apt-get update \
+ && : \
+ && apt-get install -y --no-install-recommends \
+	    python-ndg-httpsclient \
+		python-openssl \
+        python-crypto \
+		python-cryptography \
+		python-beautifulsoup \
+		python-six \
+		\
+		libgmp10 \
+		\
+ 		libgmp-dev build-essential python-dev python-pip python-setuptools python-wheel \
+ && : \
+ && pip install \
+ 		Mopidy-GMusic \
+        Mopidy-Moped \
+        Mopidy-API-Explorer \
+        Mopidy-Material-Webclient \
+        #Mopidy-Mobile \
+        Mopidy-Mopify \
+        Mopidy-MusicBox-Webclient \
+        Mopidy-Spotmop \
+ && : \
+ && apt-get purge -y \
+ 		gcc-5 gcc g++-5 patch make xz-utils binutils cpp-5 libatomic1 '.*-dev$' \
+		libgmp-dev build-essential python-dev python-pip python-setuptools python-wheel \
+ && apt-get autoremove -y \
+ && apt-get autoremove -y \
+ && apt-get autoremove -y \
+ && : \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /tmp/* /var/tmp/* ~/.cache \
+ && :
+
+# entrypoint baby
+COPY entrypoint /
+
+# ~~~ all past here runs as mopidy ~~~
 USER mopidy
+
+COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 VOLUME /var/lib/mopidy/local
 VOLUME /var/lib/mopidy/media
 
-EXPOSE 6600
-EXPOSE 6680
-
-ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 6600 6680
+ENTRYPOINT ["/entrypoint"]
 CMD ["/usr/bin/mopidy"]

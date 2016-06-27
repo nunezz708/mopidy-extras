@@ -1,9 +1,13 @@
 #!/bin/bash
+set -ev
 
-if [[ "$PULSE_COOKIE_DATA" != "" ]]
-then
+if [[ -n "$PULSE_COOKIE_DATA" ]]; then
     echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >$HOME/pulse.cookie
     export PULSE_COOKIE=$HOME/pulse.cookie
 fi
 
-exec "$@"
+case "$1" in
+	*)
+		exec "$@"
+		;;
+esac
