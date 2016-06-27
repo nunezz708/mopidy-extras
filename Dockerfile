@@ -7,13 +7,13 @@ RUN set -xv \
  && : \
  && apt-get install -y --no-install-recommends \
         #gstreamer0.10-alsa \
-		#alsa-base \
-		#gstreamer1.0-x \
-	    gstreamer1.0-alsa gstreamer1.0-pulseaudio \
-		#gstreamer1.0-tools \
-		#libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
-	    #xdg-user-dirs \
-		gosu \
+        #alsa-base \
+        #gstreamer1.0-x \
+        gstreamer1.0-alsa gstreamer1.0-pulseaudio \
+        #gstreamer1.0-tools \
+        #libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
+        #xdg-user-dirs \
+        gosu \
  && : \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
@@ -28,7 +28,7 @@ RUN set -xv \
  && apt-get update \
  && : \
  && apt-get install -y --no-install-recommends \
-		mopidy \
+        mopidy \
         $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'mpris|doc') \
  && : \
  && apt-get clean \
@@ -39,21 +39,21 @@ RUN set -xv \
  && apt-get update \
  && : \
  && apt-get install -y --no-install-recommends \
-	    python-ndg-httpsclient \
-		python-openssl \
+        python-ndg-httpsclient \
+        python-openssl \
         python-crypto \
-		python-cryptography \
-		python-beautifulsoup \
-		python-six \
-		python-setuptools \
-		\
-		libgmp10 \
-		\
- 		libgmp-dev build-essential python-dev python-pip python-wheel \
+        python-cryptography \
+        python-beautifulsoup \
+        python-six \
+        python-setuptools \
+        \
+        libgmp10 \
+        \
+        libgmp-dev build-essential python-dev python-pip python-wheel \
  && : \
  && pip install \
- 		pafy \
- 		Mopidy-GMusic \
+        pafy \
+        Mopidy-GMusic \
         Mopidy-Moped \
         Mopidy-API-Explorer \
         Mopidy-Material-Webclient \
@@ -61,10 +61,13 @@ RUN set -xv \
         Mopidy-Mopify \
         Mopidy-MusicBox-Webclient \
         Mopidy-Spotmop \
+        mopidy-notifier \
+        Mopidy-Webhooks \
+        Mopidy-AudioAddict \
  && : \
  && apt-get purge -y \
- 		gcc-5 gcc g++-5 patch make xz-utils binutils cpp-5 libatomic1 '.*-dev$' \
-		libgmp-dev build-essential python-dev python-pip python-wheel \
+        gcc-5 gcc g++-5 patch make xz-utils binutils cpp-5 libatomic1 '.*-dev$' \
+        libgmp-dev build-essential python-dev python-pip python-wheel \
  && apt-get autoremove -y \
  && apt-get autoremove -y \
  && apt-get autoremove -y \

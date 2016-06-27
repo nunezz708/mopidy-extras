@@ -3,14 +3,29 @@ Containerized [**Mopidy**](https://www.mopidy.com/) music server with support fo
 
 ### Features
 
-  * Follows [official installation](https://docs.mopidy.com/en/latest/installation/debian/) on top of [Debian](https://registry.hub.docker.com/_/debian/).
-  * With backend extensions for:
-      * [Mopidy-Spotify](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-spotify) for **[Spotify](https://www.spotify.com/us/)** (Premium)
-      * [Mopidy-GMusic](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-gmusic) for **[Google Play Music](https://play.google.com/music/listen)**
-      * [Mopidy-SoundClound](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-soundcloud) for **[SoundCloud](https://soundcloud.com/stream)**
-      * [Mopidy-YouTube](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-youtube) for **[YouTube](https://www.youtube.com)**
-  * With [Mopidy-Moped](https://docs.mopidy.com/en/latest/ext/web/#mopidy-moped) web extension.
-  * Runs as `mopidy` user inside the container (for security reasons).
+  * Follows [official installation](https://docs.mopidy.com/en/latest/installation/debian/) on top of [Ubuntu](https://registry.hub.docker.com/_/ubuntu/).
+  * Backend extensions:
+    * Standards: DLNA(dLeyna)
+    * [Mopidy-Spotify](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-spotify) for **[Spotify](https://www.spotify.com/us/)** (Premium)
+    * [Mopidy-GMusic](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-gmusic) for **[Google Play Music](https://play.google.com/music/listen)**
+    * [Mopidy-SoundClound](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-soundcloud) for **[SoundCloud](https://soundcloud.com/stream)**
+    * [Mopidy-YouTube](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-youtube) for **[YouTube](https://www.youtube.com)**
+	* AudioAddict (difm)
+	* More
+  * Frontend extensions:
+    * Standards: MPD, HTTP
+    * [Mopidy-Scrobbler](http://mopidy.readthedocs.io/en/latest/ext/frontends/#mopidy-scrobbler)
+    * [Mopidy-API-Explorer](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-api-explorer)
+	* [Mopidy-Local-Images](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-local-images)
+	* [Mopidy-Material-Webclient](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-material-webclient)
+	* [Mopidy-Mopify](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-mopify)
+	* [Mopidy-MusicBox-Webclient](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-musicbox-webclient)
+	* [Mopidy-Spotmop](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-spotmop)
+	* [Mopidy-Moped](https://docs.mopidy.com/en/latest/ext/web/#mopidy-moped)
+	* Mopidy-Webhooks
+	* Mopidy-Notifier
+	* More
+  * Runs as `mopidy` user inside the container (for security).
 
 You may install additional [backend extensions](https://docs.mopidy.com/en/latest/ext/backends/).
 
