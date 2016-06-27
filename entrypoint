@@ -6,7 +6,7 @@ export ${!PULSE*} _SENTINEL
 if [[ $UID -eq 0 ]]; then
 	mkdir -pv /var/lib/mopidy/.{local{,/share},config}/mopidy
 	chown -Rcx mopidy:audio /var/lib/mopidy
-	chown -Rc  mopidy:audio /var/lib/mopidy/.{local,config}
+	chown -Rc  mopidy:audio /var/lib/mopidy/.{local,config} || :
 	exec gosu mopidy "$0" "$@"
 fi
 
