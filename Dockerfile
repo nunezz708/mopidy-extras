@@ -46,12 +46,14 @@ RUN set -xv \
 		python-cryptography \
 		python-beautifulsoup \
 		python-six \
+		python-setuptools \
 		\
 		libgmp10 \
 		\
- 		libgmp-dev build-essential python-dev python-pip python-setuptools python-wheel \
+ 		libgmp-dev build-essential python-dev python-pip python-wheel \
  && : \
  && pip install \
+ 		pafy \
  		Mopidy-GMusic \
         Mopidy-Moped \
         Mopidy-API-Explorer \
@@ -63,7 +65,7 @@ RUN set -xv \
  && : \
  && apt-get purge -y \
  		gcc-5 gcc g++-5 patch make xz-utils binutils cpp-5 libatomic1 '.*-dev$' \
-		libgmp-dev build-essential python-dev python-pip python-setuptools python-wheel \
+		libgmp-dev build-essential python-dev python-pip python-wheel \
  && apt-get autoremove -y \
  && apt-get autoremove -y \
  && apt-get autoremove -y \
