@@ -6,6 +6,9 @@ if [[ -n "$PULSE_COOKIE_DATA" ]]; then
     export PULSE_COOKIE=$HOME/pulse.cookie
 fi
 
+chown -Rcx mopidy:audio /var/lib/mopidy || :
+chown -Rc  mopidy:audio /var/lib/mopidy || :
+
 case "$1" in
 	*)
 		exec "$@"

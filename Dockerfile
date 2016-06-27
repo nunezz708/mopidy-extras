@@ -32,8 +32,6 @@ RUN set -xv \
  && : \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
- && : \
- && chown mopidy:audio -c /var/lib/mopidy \
  && :
 
 RUN set -xv \
