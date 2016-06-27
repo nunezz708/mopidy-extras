@@ -1,9 +1,11 @@
 Containerized [**Mopidy**](https://www.mopidy.com/) music server with support for [MPD clients](https://docs.mopidy.com/en/latest/clients/mpd/) and [HTTP clients](https://docs.mopidy.com/en/latest/ext/web/#ext-web).
 
+Originally a fork of https://github.com/wernight/docker-mopidy, but has been highly modified since.
 
 ### Features
 
-  * Follows [official installation](https://docs.mopidy.com/en/latest/installation/debian/) on top of [Ubuntu](https://registry.hub.docker.com/_/ubuntu/).
+  * Based on `Ubuntu` official (`ubuntu:latest`)
+  * Extremely easy to add new plugins through PR, most are just a single line addition to the `Dockerfile`.
   * Backend extensions:
     * Standards: DLNA(dLeyna)
     * [Mopidy-Spotify](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-spotify) for **[Spotify](https://www.spotify.com/us/)** (Premium)
@@ -27,7 +29,7 @@ Containerized [**Mopidy**](https://www.mopidy.com/) music server with support fo
 	* More
   * Runs as `mopidy` user inside the container (for security).
 
-You may install additional [backend extensions](https://docs.mopidy.com/en/latest/ext/backends/).
+You may install additional [backends](https://docs.mopidy.com/en/latest/ext/backends/) or [frontends](https://docs.mopidy.com/en/latest/ext/frontends/).
 
 
 ### Usage
