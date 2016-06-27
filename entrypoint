@@ -1,13 +1,19 @@
 #!/bin/bash
 set -ev
 
-if [[ -n "$PULSE_COOKIE_DATA" ]]; then
-    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >$HOME/pulse.cookie
-    export PULSE_COOKIE=$HOME/pulse.cookie
+export ${!PULSE*} _SENTINEL
+
+if [[ $UID -eq 0 ]]; then
+	mkdir -pv /var/lib/mopidy/.{local{,/share},config}/mopidy
+	chown -Rcx mopidy:audio /var/lib/mopidy
+	chown -Rc  mopidy:audio /var/lib/mopidy/.{local,config}
+	exec gosu mopidy "$0" "$@"
 fi
 
-chown -Rcx mopidy:audio /var/lib/mopidy || :
-chown -Rc  mopidy:audio /var/lib/mopidy || :
+if [[ -n "$PULSE_COOKIE_DATA" ]]; then
+    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >$HOME/pulse.cookie
+    PULSE_COOKIE=$HOME/pulse.cookie
+fi
 
 case "$1" in
 	*)

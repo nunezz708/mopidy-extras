@@ -13,6 +13,7 @@ RUN set -xv \
 		#gstreamer1.0-tools \
 		#libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
 	    #xdg-user-dirs \
+		gosu \
  && : \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
@@ -72,12 +73,7 @@ RUN set -xv \
  && rm -rf /tmp/* /var/tmp/* ~/.cache \
  && :
 
-# entrypoint baby
 COPY entrypoint /
-
-# ~~~ all past here runs as mopidy ~~~
-USER mopidy
-
 COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 VOLUME /var/lib/mopidy/local
@@ -85,4 +81,4 @@ VOLUME /var/lib/mopidy/media
 
 EXPOSE 6600 6680
 ENTRYPOINT ["/entrypoint"]
-CMD ["/usr/bin/mopidy"]
+CMD ["mopidy"]
