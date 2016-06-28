@@ -1,7 +1,7 @@
 version: '2'
 services:
     mopidy:
-        image: trevorj/mopidy-extras:develop  # use :latest for stable
+        image: trevorj/mopidy-extras  # latest == stable; use :develop for development version
         # reasoning for net=host is to allow for data network broadcasts
         # to work easily across the lan.
         network_mode: host
@@ -11,10 +11,13 @@ services:
             - $XDG_CONFIG_HOME/mopidy:/app/.config/mopidy
         
             # (Optional) Local media directory
-            - $XDG_MUSIC_HOME:/app/Music:ro
+            #- $HOME/Music:/app/Music:ro
+            # --- or maybe ---
+            #- $XDG_MUSIC_HOME:/app/Music:ro
         
             # Forward local pulseaudio (mmm cookies)
-            # Alternatively, you may specify PULSE_COOKIE_DATA environment variable which will write this file out.
+            # Alternatively, you may specify PULSE_COOKIE_DATA environment variable which will
+            # write this file out.
             - $XDG_CONFIG_HOME/pulse:/app/.config/pulse
         environment:
             - PULSE_SERVER

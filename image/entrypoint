@@ -1,0 +1,40 @@
+#!/bin/bash
+set -ev
+
+if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
+    mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
+    chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
+
+    export ${!*} _SENTINEL=true
+    exec gosu "$APP_USER" "$0" "$@"
+fi
+
+if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
+    cp -av "$APP_HOME/mopidy.conf.default" "$XDG_CONFIG_HOME/mopidy/mopidy.conf"
+fi
+
+if [[ -n "$PULSE_COOKIE_DATA" ]]; then
+    : ${PULSE_COOKIE:="$HOME/pulse.cookie"}
+    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >"$PULSE_COOKIE"
+fi
+
+case "$1" in
+    -*)
+        # If we're just given options, prefix mopidy
+        set -- mopidy "$@"
+        ;;
+    host)
+        file=$(basename "$2")
+        case "${file,,}" in
+            *compose*)        file=docker-compose.yml ;;
+            *readme*|*help*)  file=README.md ;;
+        esac
+        file="$APP_HOME/host/$file"
+        exec cat "$file"
+        ;;
+    compose|readme|run)
+        exec "$0" host "$@"
+        ;;
+esac
+
+exec "$@"

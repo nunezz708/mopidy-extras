@@ -85,7 +85,7 @@ RUN set -xv \
  && rm -rf /tmp/* /var/tmp/* ~/.cache \
  && :
 
-COPY entrypoint /
+COPY image/entrypoint /
 
 USER $APP_USER
 
@@ -98,11 +98,13 @@ ENV PULSE_SERVER="tcp:0.0.0.0:4713" \
     XDG_RUNTIME_DIR="/tmp"
 
 VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
-COPY mopidy.conf $APP_HOME/mopidy.conf.default
+COPY image/mopidy.conf $APP_HOME/mopidy.conf.default
 
 EXPOSE 6600 6680
 ENTRYPOINT ["/entrypoint"]
 CMD ["mopidy"]
+
+ADD run docker-compose.yml README.md $APP_HOME/host/
 
 # delevate down to $APP_USER in entrypoint after fixing up perms
 USER root
