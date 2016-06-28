@@ -12,22 +12,22 @@ Originally a fork of https://github.com/wernight/docker-mopidy, but has been hig
     * [Mopidy-GMusic](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-gmusic) for **[Google Play Music](https://play.google.com/music/listen)**
     * [Mopidy-SoundClound](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-soundcloud) for **[SoundCloud](https://soundcloud.com/stream)**
     * [Mopidy-YouTube](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-youtube) for **[YouTube](https://www.youtube.com)**
-	* AudioAddict (difm)
-	* More
+    * AudioAddict (difm)
+    * More
   * Frontend extensions:
     * Standards: MPD, HTTP
     * [Mopidy-Scrobbler](http://mopidy.readthedocs.io/en/latest/ext/frontends/#mopidy-scrobbler)
     * [Mopidy-API-Explorer](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-api-explorer)
-	* [Mopidy-Local-Images](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-local-images)
-	* [Mopidy-Material-Webclient](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-material-webclient)
-	* [Mopidy-Mopify](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-mopify)
-	* [Mopidy-MusicBox-Webclient](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-musicbox-webclient)
-	* [Mopidy-Spotmop](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-spotmop)
-	* [Mopidy-Moped](https://docs.mopidy.com/en/latest/ext/web/#mopidy-moped)
-	* Mopidy-Webhooks
-	* Mopidy-Notifier
-	* More
-  * Runs as `mopidy` user inside the container (for security).
+    * [Mopidy-Local-Images](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-local-images)
+    * [Mopidy-Material-Webclient](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-material-webclient)
+    * [Mopidy-Mopify](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-mopify)
+    * [Mopidy-MusicBox-Webclient](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-musicbox-webclient)
+    * [Mopidy-Spotmop](http://mopidy.readthedocs.io/en/latest/ext/web/#mopidy-spotmop)
+    * [Mopidy-Moped](https://docs.mopidy.com/en/latest/ext/web/#mopidy-moped)
+    * Mopidy-Webhooks
+    * Mopidy-Notifier
+    * More
+  * Runs as `app` user inside the container for security.
 
 You may install additional [backends](https://docs.mopidy.com/en/latest/ext/backends/) or [frontends](https://docs.mopidy.com/en/latest/ext/frontends/).
 
@@ -67,7 +67,20 @@ Use it like so, all options are optional, although the more you provide the more
       -o gmusic/username='BLAH' -o gmusic/password='BLAH' \
       -o spotify_web/client_id='BLAH' -o spotify_web/client_secret='BLAH' \
       -o scrobbler/username='BLAH' -o scrobbler/password='BLAH' \
-	  -o audioaddict/username='BLAH' -o audioaddict/password='BLAH' \
+      -o audioaddict/username='BLAH' -o audioaddict/password='BLAH' \
+      -o soundcloud/auth_token='BLAH'
+```
+
+You can also use `docker-compose` using the provided `docker-compose.yml` file. This works by forwarding your local
+PulseAudio configuration into the container as a volume instead of passing in the cookie as an environment variable.
+
+```sh
+docker-compose run --service-ports mopidy \
+      -o spotify/username='BLAH' -o spotify/password='BLAH' \
+      -o gmusic/username='BLAH' -o gmusic/password='BLAH' \
+      -o spotify_web/client_id='BLAH' -o spotify_web/client_secret='BLAH' \
+      -o scrobbler/username='BLAH' -o scrobbler/password='BLAH' \
+      -o audioaddict/username='BLAH' -o audioaddict/password='BLAH' \
       -o soundcloud/auth_token='BLAH'
 ```
 
@@ -105,7 +118,7 @@ Volumes:
  3. Start the server:
 
         $ ./run mopidy
-		docker run -d \
+        docker run -d \
               -e PULSE_SERVER=tcp:$(hostname -i):4713 \
               -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
               -v $PWD/media:/var/lib/mopidy/media:ro \
