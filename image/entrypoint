@@ -2,15 +2,15 @@
 set -e
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
-    mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
-    chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
+    mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy >&2
+    chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy} >&2
 
     export ${!*} _SENTINEL=true
     exec gosu "$APP_USER" "$0" "$@"
 fi
 
 if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
-    cp -av "$APP_HOME/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf"
+    cp -av "$APP_HOME/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf" >&2
 fi
 
 if [[ -n "$PULSE_COOKIE_DATA" ]]; then
