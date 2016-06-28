@@ -19,7 +19,7 @@ RUN set -xv \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
  && :
 
-ADD https://apt.mopidy.com/jessie.list /etc/apt/sources.list.d/mopidy.list
+ADD https://apt.mopidy.com/mopidy.list /etc/apt/sources.list.d/mopidy.list
 ADD https://apt.mopidy.com/mopidy.gpg /tmp/mopidy.gpg
 
 ENV APP_USER=app \

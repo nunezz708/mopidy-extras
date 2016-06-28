@@ -19,29 +19,29 @@ if [[ -n "$PULSE_COOKIE_DATA" ]]; then
 fi
 
 main() {
-	case "$1" in
-		-*)
-			# If we're just given options, prefix mopidy
-			set -- mopidy "$@"
-			;;
-		host)
-			file=$(basename "$2")
-			case "${file,,}" in
-				*compose*)        file=docker-compose.yml ;;
-				*readme*|*help*)  file=README.md ;;
-			esac
+    case "$1" in
+        -*)
+            # If we're just given options, prefix mopidy
+            set -- mopidy "$@"
+            ;;
+        host)
+            file=$(basename "$2")
+            case "${file,,}" in
+                *compose*)        file=docker-compose.yml ;;
+                *readme*|*help*)  file=README.md ;;
+            esac
 
-			file="$APP_HOME/host/$file"
+            file="$APP_HOME/host/$file"
 
-			if [[ ! -f "$file" ]]; then
-				echo "File $file not found." >&2
-				exit 1
-			fi
+            if [[ ! -f "$file" ]]; then
+                echo "File $file not found." >&2
+                exit 1
+            fi
 
-			set -- cat "$file"
-			;;
-	esac
-	exec "$@"
+            set -- cat "$file"
+            ;;
+    esac
+    exec "$@"
 }
 
 main "$@"
