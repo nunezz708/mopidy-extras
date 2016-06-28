@@ -63,20 +63,21 @@ It's also stored in the image for easy access.
 Use it like so, all options are optional, although the more you provide the more functionality you'll have.
 
 ```sh
-docker run -it --rm trevorj/mopidy-extras host run | bash - -- \
+docker run --rm trevorj/mopidy-extras host run \
       -o spotify/username='BLAH' -o spotify/password='BLAH' \
       -o gmusic/username='BLAH' -o gmusic/password='BLAH' \
       -o spotify_web/client_id='BLAH' -o spotify_web/client_secret='BLAH' \
       -o scrobbler/username='BLAH' -o scrobbler/password='BLAH' \
       -o audioaddict/username='BLAH' -o audioaddict/password='BLAH' \
-      -o soundcloud/auth_token='BLAH'
+      -o soundcloud/auth_token='BLAH' \
+      | bash
 ```
 
 You can also use `docker-compose` using the provided `docker-compose.yml` file. This works by forwarding your local
 PulseAudio configuration into the container as a volume instead of passing in the cookie as an environment variable.
 
 ```sh
-docker run -it --rm trevorj/mopidy-extras host compose > docker-compose.yml
+# in repo
 docker-compose run --service-ports mopidy \
       -o spotify/username='BLAH' -o spotify/password='BLAH' \
       -o gmusic/username='BLAH' -o gmusic/password='BLAH' \

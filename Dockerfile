@@ -14,7 +14,7 @@ RUN set -xv \
         #libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
         #xdg-user-dirs \
         gosu \
-		wget \
+        wget \
  && : \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
