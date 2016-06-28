@@ -85,7 +85,8 @@ RUN set -xv \
  && rm -rf /tmp/* /var/tmp/* ~/.cache \
  && :
 
-COPY image/entrypoint /
+COPY image $APP_HOME/image
+RUN ln -sfv $APP_HOME/image/entrypoint /
 
 USER $APP_USER
 
@@ -99,7 +100,6 @@ ENV PULSE_SERVER="tcp:0.0.0.0:4713" \
     XDG_RUNTIME_DIR="/tmp"
 
 VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
-COPY image/mopidy.conf $APP_HOME/mopidy.conf.default
 
 EXPOSE 6600 6680
 ENTRYPOINT ["/entrypoint"]

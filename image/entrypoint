@@ -10,7 +10,7 @@ if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
 fi
 
 if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
-    cp -av "$APP_HOME/mopidy.conf.default" "$XDG_CONFIG_HOME/mopidy/mopidy.conf"
+    cp -av "$APP_HOME/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf"
 fi
 
 if [[ -n "$PULSE_COOKIE_DATA" ]]; then
