@@ -24,8 +24,7 @@ ENV APP_USER=app \
     APP_HOME=/app
 
 RUN set -xv \
- && wget -qO /etc/apt/sources.list.d/mopidy.list \
-    https://apt.mopidy.com/mopidy.list /etc/apt/sources.list.d/mopidy.list \
+ && wget -qO /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/mopidy.list \
  && wget -qO /tmp/mopidy.gpg https://apt.mopidy.com/mopidy.gpg \
  && apt-key add /tmp/mopidy.gpg \
  && : \
