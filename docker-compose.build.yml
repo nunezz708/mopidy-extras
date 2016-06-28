@@ -5,6 +5,7 @@ services:
         # reasoning for net=host is to allow for data network broadcasts
         # to work easily across the lan.
         network_mode: host
+        hostname: $HOSTNAME
         volumes:
             # (Optional) Maintain state across runs.
             - $XDG_DATA_HOME/mopidy:/app/.local/share/mopidy
@@ -25,3 +26,4 @@ services:
         expose:
             - 6600
             - 6680
+
