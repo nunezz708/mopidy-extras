@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
     mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
