@@ -112,8 +112,8 @@ ENV PULSE_SERVER="tcp:0.0.0.0:4713" \
     XDG_CONFIG_HOME="$APP_HOME/.config" \
     XDG_CACHE_HOME="$APP_HOME/.cache" \
     XDG_DATA_HOME="$APP_HOME/.local/share" \
-    XDG_MUSIC_DIR="$APP_HOME/Music" \
-    XDG_RUNTIME_DIR="/run/user/1000"
+    XDG_MUSIC_DIR="$APP_HOME/Music"
+    #XDG_RUNTIME_DIR="/run/user/1000"
 
 VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
 
