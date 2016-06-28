@@ -54,7 +54,7 @@ RUN set -xv \
         #libffi-dev \
         #libssl-dev \
         python-setuptools \
-        notify-send \
+		libnotify-bin \
         \
         libgmp10 \
         \
