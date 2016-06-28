@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# ~ start a mopidy container using sane defaults.
+#
+set -eo pipefail
+
+: ${NAME:='mopidy'}
+: ${IMAGE:='trevorj/mopidy-extras:develop'}  # remove :develop for stable (:latest)
+
+: ${MEDIA_DIR:="$(xdg-user-dirs MUSIC)"}
+: ${DATA_DIR:="$(xdg-user-dirs DATA)/mopidy"}
+: ${CONFIG_DIR:="$(xdg-user-dirs CONFIG)/mopidy"}
+
+: ${DISPLAY:=':0.0'}
+: ${PULSE_COOKIE_DATA:="$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*')"}
+: ${PULSE_SERVER:='tcp:0.0.0.0:4713'}
+
+set -v
+
+# pull image first to minimize downtime.
+docker pull "$IMAGE"
+
+# stop and remove any existing.
+for i in stop rm; do docker $i "$NAME" || :; done
+
+# run container in the background.
+docker run -d \
+      --name="$NAME" \
+      --hostname="$NAME" \
+      --net=host \
+      -e PULSE_SERVER \
+      -e PULSE_COOKIE_DATA \
+      -v "$MEDIA_DIR":"$APP_HOME/Music" \
+      -v "$CONFIG_DIR":"$APP_HOME/.config/mopidy" \
+      -v "$DATA_DIR":"$APP_HOME/.local/share/mopidy" \
+      "$IMAGE" \
+	  "$@"
