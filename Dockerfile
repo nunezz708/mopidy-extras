@@ -126,14 +126,3 @@ ADD run docker-compose.yml README.md $APP_HOME/host/
 # delevate down to $APP_USER in entrypoint after fixing up perms
 USER root
 
-RUN set -xv \
- #&& echo 'http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main' > /etc/apt/sources.list.d/upmpdcli.list \
- && apt-add-repository ppa:jean-francois-dockes/upnpp1 \
- && apt-get update \
- && : \
- && apt-get install -y upmpdcli sc2mpd \
- && : \
- && apt-get clean && rm -rf /var/lib/apt/lists/* \
- && rm -rf /tmp/* /var/tmp/* ~/.cache \
- && :
-
