@@ -7,9 +7,9 @@ set -eo pipefail
 : ${NAME:='mopidy'}
 : ${IMAGE:='trevorj/mopidy-extras:develop'}  # remove :develop for stable (:latest)
 
-: ${MEDIA_DIR:="$(xdg-user-dirs MUSIC)"}
-: ${DATA_DIR:="$(xdg-user-dirs DATA)/mopidy"}
-: ${CONFIG_DIR:="$(xdg-user-dirs CONFIG)/mopidy"}
+: ${MEDIA_DIR:="$(xdg-user-dir MUSIC)"}
+: ${DATA_DIR:="$(xdg-user-dir DATA)/mopidy"}
+: ${CONFIG_DIR:="$(xdg-user-dir CONFIG)/mopidy"}
 
 : ${DISPLAY:=':0.0'}
 : ${PULSE_COOKIE_DATA:="$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*')"}
