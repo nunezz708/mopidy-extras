@@ -50,11 +50,11 @@ RUN set -xv \
         python-cryptography \
         python-beautifulsoup \
         python-six \
-		python-cffi \
-		#libffi-dev \
-		#libssl-dev \
+        python-cffi \
+        #libffi-dev \
+        #libssl-dev \
         python-setuptools \
-		notify-send \
+        notify-send \
         \
         libgmp10 \
         \
