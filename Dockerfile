@@ -109,3 +109,16 @@ ADD run docker-compose.yml README.md $APP_HOME/host/
 
 # delevate down to $APP_USER in entrypoint after fixing up perms
 USER root
+
+ADD https://github.com/badaix/snapcast/releases/download/v0.7.0/snapclient_0.7.0_amd64.deb /tmp/snapclient.deb
+ADD https://github.com/badaix/snapcast/releases/download/v0.7.0/snapserver_0.7.0_amd64.deb /tmp/snapserver.deb
+RUN set -xv \
+ && apt-get update \
+ && : \
+ && (dpkg -i /tmp/snapclient.deb /tmp/snapserver.deb || :) \
+ && apt-get -f install \
+ && : \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /tmp/* /var/tmp/* ~/.cache \
+ && :
+
