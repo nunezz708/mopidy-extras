@@ -108,36 +108,42 @@ Environment variables:
 
 Volumes:
 
-  * `/var/lib/mopidy/media` - Path to directory with local media files (optional).
-  * `/var/lib/mopidy/local` - Path to directory to store local metadata such as libraries and playlists in (optional).
+  * `/app/Music` (`$XDG_MUSIC_DIR`) - Path to directory with local media files (optional).
+  * `/app/.local/share/mopidy` (`$XDG_DATA_HOME/mopidy`) - Path to directory to store local metadata such as libraries and playlists in (optional).
 
 ##### Example using HTTP client to stream local files
 
- 1. Give read access to your audio files to user **102** (`mopidy`), group **29** (`audio`), or all users (e.g., `$ chgrp -R 29 $PWD/media && chmod -R g+r $PWD/media`).
+ 1. Give read access to your audio files to user **1000** (`app` ala `$APP_USER`), group **1000** (`app`) or **29** (`audio`), or even all users (e.g., `$ chgrp -R 29 $PWD/media && chmod -R g+r $PWD/media`).
+
+    * Work is currently being done to provide a more dynamic permission allocation.
+
  2. Index local files:
 
-        $ ./run mopidy local scan
+        $ docker run --rm trevorj/mopidy-extras host run mopidy local scan | bash
 
  3. Start the server:
 
-        $ ./run mopidy
-        docker run -d \
-              -e PULSE_SERVER=tcp:$(hostname -i):4713 \
-              -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
-              -v $PWD/media:/var/lib/mopidy/media:ro \
-              -v $PWD/local:/var/lib/mopidy/local \
-              -p 6680:6680 \
-              trevorj/mopidy-extras
+```sh
+docker run --rm trevorj/mopidy-extras host run \
+      -o spotify/username='BLAH' -o spotify/password='BLAH' \
+      -o gmusic/username='BLAH' -o gmusic/password='BLAH' \
+      -o spotify_web/client_id='BLAH' -o spotify_web/client_secret='BLAH' \
+      -o scrobbler/username='BLAH' -o scrobbler/password='BLAH' \
+      -o audioaddict/username='BLAH' -o audioaddict/password='BLAH' \
+      -o soundcloud/auth_token='BLAH' \
+      | bash
+```
 
- 4. Browse to http://localhost:6680/
+ 4. Browse to http://$HOST:6680/
+
+         $ xdg-open http://$HOST:6680
+
 
 #### Example using [ncmpcpp](https://docs.mopidy.com/en/latest/clients/mpd/#ncmpcpp) MPD console client
 
-    $ docker run --name mopidy -d \
-          -e PULSE_SERVER=tcp:$(hostname -i):4713 \
-          -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
-          trevorj/mopidy-extras
-    $ docker run --rm -it --link mopidy:mopidy wernight/ncmpcpp ncmpcpp --host mopidy
+Start the server using the commands above, then run ncmpcpp any usual way, ala:
+
+    $ docker run --rm -it wernight/ncmpcpp ncmpcpp --host "$HOST"
 
 
 ### Feedbacks
