@@ -33,6 +33,7 @@ case "$1" in
 esac
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
+	useradd -U -G audio -d "$APP_HOME" -s /bin/bash -M -o -u "$APP_UID" "$APP_USER"
     mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
     chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
 

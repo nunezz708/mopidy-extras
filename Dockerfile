@@ -1,49 +1,29 @@
 FROM ubuntu
-
 MAINTAINER Trevor Joynson <docker@trevor.joynson.io>
 
-RUN set -xv \
- && apt-get update \
- && : \
- && apt-get install -y --no-install-recommends \
-        #gstreamer0.10-alsa \
-        #alsa-base \
-        #gstreamer1.0-x \
-        gstreamer1.0-alsa gstreamer1.0-pulseaudio \
-        #gstreamer1.0-tools \
-        #libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
-        #xdg-user-dirs \
-        gosu \
-        wget \
- && : \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
- && :
+ADD common/bin /usr/local/bin/
+RUN image-prep
 
 ENV APP_USER=app \
     APP_HOME=/app
 
 RUN set -xv \
- && wget -qO /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/mopidy.list \
- && wget -qO /tmp/mopidy.gpg https://apt.mopidy.com/mopidy.gpg \
- && apt-key add /tmp/mopidy.gpg \
- && : \
- && apt-get update \
- && : \
- && useradd -U -G audio -d "$APP_HOME" -s /bin/bash -m -u 1000 "$APP_USER" \
- && : \
- && apt-get install -y --no-install-recommends \
-        mopidy \
-        $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'mpris|doc') \
- && : \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
+ && lazy-apt --no-install-recommends \
+      gstreamer1.0-alsa gstreamer1.0-pulseaudio gstreamer1.0-tools \
+      xdg-user-dirs xdg-utils \
  && :
 
 RUN set -xv \
- && apt-get update \
- && : \
- && apt-get install -y --no-install-recommends \
+ && curl -sL https://apt.mopidy.com/mopidy.gpg \
+    | apt-key add - \
+ && lazy-apt-repo mopidy https://apt.mopidy.com/mopidy.list \
+ && lazy-apt --no-install-recommends \
+        mopidy \
+        $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'mpris|doc') \
+ && :
+
+RUN set -xv \
+ && cleanup=no lazy-apt --no-install-recommends \
         python-ndg-httpsclient \
         python-openssl \
         python-crypto \
@@ -57,10 +37,9 @@ RUN set -xv \
         libnotify-bin \
         \
         libgmp10 \
-        \
+ && cleanup=no lazy-apt-with --no-install-recommends \
         libgmp-dev build-essential python-dev python-pip python-wheel \
- && : \
- && pip install \
+ -- pip install \
         pafy \
         Mopidy-GMusic \
         Mopidy-Moped \
@@ -92,21 +71,17 @@ RUN set -xv \
  && : \
  && apt-get purge -y \
         gcc-5 gcc g++-5 patch make xz-utils binutils cpp-5 libatomic1 '.*-dev$' \
-        libgmp-dev build-essential python-dev python-pip python-wheel \
  && apt-get autoremove -y \
  && apt-get autoremove -y \
  && apt-get autoremove -y \
- && : \
- && apt-get clean && rm -rf /var/lib/apt/lists/* \
- && rm -rf /tmp/* /var/tmp/* ~/.cache \
- && :
+ && image-cleanup
 
 COPY image $APP_HOME/image
 RUN ln -sfv $APP_HOME/image/entrypoint /
 
 USER $APP_USER
 
-ENV PULSE_SERVER="tcp:0.0.0.0:4713" \
+ENV PULSE_SERVER="tcp:localhost:4713" \
     PULSE_COOKIE_DATA="" \
     PULSE_COOKIE="" \
     XDG_CONFIG_HOME="$APP_HOME/.config" \
