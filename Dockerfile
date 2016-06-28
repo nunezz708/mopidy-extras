@@ -22,10 +22,15 @@ RUN set -xv \
 ADD https://apt.mopidy.com/jessie.list /etc/apt/sources.list.d/mopidy.list
 ADD https://apt.mopidy.com/mopidy.gpg /tmp/mopidy.gpg
 
+ENV APP_USER=app \
+    APP_HOME=/app
+
 RUN set -xv \
  && apt-key add /tmp/mopidy.gpg \
  && : \
  && apt-get update \
+ && : \
+ && useradd -U -G audio -d "$APP_HOME" -s /bin/bash -m -u 1000 "$APP_USER" \
  && : \
  && apt-get install -y --no-install-recommends \
         mopidy \
@@ -45,7 +50,11 @@ RUN set -xv \
         python-cryptography \
         python-beautifulsoup \
         python-six \
+		python-cffi \
+		#libffi-dev \
+		#libssl-dev \
         python-setuptools \
+		notify-send \
         \
         libgmp10 \
         \
@@ -77,11 +86,23 @@ RUN set -xv \
  && :
 
 COPY entrypoint /
-COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
 
-VOLUME /var/lib/mopidy/local
-VOLUME /var/lib/mopidy/media
+USER $APP_USER
+
+ENV PULSE_SERVER="tcp:0.0.0.0:4713" \
+    PULSE_COOKIE_DATA="" \
+    PULSE_COOKIE="" \
+    XDG_CONFIG_HOME="$APP_HOME/.config" \
+    XDG_CACHE_HOME="$APP_HOME/.cache" \
+    XDG_DATA_HOME="$APP_HOME/.local/share" \
+    XDG_RUNTIME_DIR="/tmp"
+
+VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
+COPY mopidy.conf $APP_HOME/mopidy.conf.default
 
 EXPOSE 6600 6680
 ENTRYPOINT ["/entrypoint"]
 CMD ["mopidy"]
+
+# delevate down to $APP_USER in entrypoint after fixing up perms
+USER root

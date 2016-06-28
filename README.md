@@ -57,25 +57,28 @@ First to make [audio from from within a Docker container](http://stackoverflow.c
 
 #### General usage
 
-    $ docker run -d \
-          -e PULSE_SERVER=tcp:$(hostname -i):4713 \
-          -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
-          -v $PWD/media:/var/lib/mopidy/media:ro \
-          -v $PWD/local:/var/lib/mopidy/local \
-          -p 6600:6600 -p 6680:6680 \
-          wernight/mopidy \
-          mopidy \
-          -o spotify/username=USERNAME -o spotify/password=PASSWORD \
-          -o gmusic/username=USERNAME -o gmusic/password=PASSWORD \
-          -o soundcloud/auth_token=TOKEN
+A script is provided to easily start a container using the latest image against your local pulseaudio daemon: [`run`](run).
+
+Use it like so, all options are optional, although the more you provide the more functionality you'll have.
+
+```sh
+./run \
+      -o spotify/username='BLAH' -o spotify/password='BLAH' \
+      -o gmusic/username='BLAH' -o gmusic/password='BLAH' \
+      -o spotify_web/client_id='BLAH' -o spotify_web/client_secret='BLAH' \
+      -o scrobbler/username='BLAH' -o scrobbler/password='BLAH' \
+	  -o audioaddict/username='BLAH' -o audioaddict/password='BLAH' \
+      -o soundcloud/auth_token='BLAH'
+```
 
 See [mopidy's command](https://docs.mopidy.com/en/latest/command/) for possible additional options.
 
-Most elements are optional (see some examples below). Replace `USERNAME`, `PASSWORD`, `TOKEN` accordingly if needed, or disable services (e.g., `-o spotify/enabled=false`):
+Most elements are optional (see some examples below). Replace `BLAH' accordingly if needed, or disable services (e.g., `-o spotify/enabled=false`):
 
   * For *Spotify* you'll need a *Premium* account.
   * For *Google Music* use your Google account (if you have *2-Step Authentication*, generate an [app specific password](https://security.google.com/settings/security/apppasswords)).
   * For *SoundCloud*, just [get a token](https://www.mopidy.com/authenticate/) after registering.
+  * For *AudioAddict*, you need a premium account if you want to set the quality past 64k, otherwise account is optional.
 
 Ports:
 
@@ -97,23 +100,18 @@ Volumes:
  1. Give read access to your audio files to user **102** (`mopidy`), group **29** (`audio`), or all users (e.g., `$ chgrp -R 29 $PWD/media && chmod -R g+r $PWD/media`).
  2. Index local files:
 
-        $ docker run --rm \
-              -e PULSE_SERVER=tcp:$(hostname -i):4713 \
-              -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
-              -v $PWD/media:/var/lib/mopidy/media:ro \
-              -v $PWD/local:/var/lib/mopidy/local \
-              -p 6680:6680 \
-              wernight/mopidy mopidy local scan
+        $ ./run mopidy local scan
 
  3. Start the server:
 
-        $ docker run -d \
+        $ ./run mopidy
+		docker run -d \
               -e PULSE_SERVER=tcp:$(hostname -i):4713 \
               -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
               -v $PWD/media:/var/lib/mopidy/media:ro \
               -v $PWD/local:/var/lib/mopidy/local \
               -p 6680:6680 \
-              wernight/mopidy
+              trevorj/mopidy-extras
 
  4. Browse to http://localhost:6680/
 
@@ -122,7 +120,7 @@ Volumes:
     $ docker run --name mopidy -d \
           -e PULSE_SERVER=tcp:$(hostname -i):4713 \
           -e PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*') \
-          wernight/mopidy
+          trevorj/mopidy-extras
     $ docker run --rm -it --link mopidy:mopidy wernight/ncmpcpp ncmpcpp --host mopidy
 
 

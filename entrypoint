@@ -1,22 +1,26 @@
 #!/bin/bash
 set -ev
 
-export ${!PULSE*} _SENTINEL
+if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
+	mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
+	chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
 
-if [[ $UID -eq 0 ]]; then
-	mkdir -pv /var/lib/mopidy/.{local{,/share},config}/mopidy
-	chown -c	mopidy:audio /var/lib/mopidy || :
-	chown -Rc	mopidy:audio /var/lib/mopidy/.{local,config} || :
-	exec gosu mopidy "$0" "$@"
+	export ${!*} _SENTINEL=true
+	exec gosu "$APP_USER" "$0" "$@"
+fi
+
+if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
+	cp -av "$APP_HOME/mopidy.conf.default" "$XDG_CONFIG_HOME/mopidy/mopidy.conf"
 fi
 
 if [[ -n "$PULSE_COOKIE_DATA" ]]; then
-    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >$HOME/pulse.cookie
-    PULSE_COOKIE=$HOME/pulse.cookie
+	: ${PULSE_COOKIE:="$HOME/pulse.cookie"}
+    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >"$PULSE_COOKIE"
 fi
 
-case "$1" in
-	*)
-		exec "$@"
-		;;
-esac
+if [[ "$1" = -* ]]; then
+	# If we're just given options, prefix mopidy
+	set -- mopidy "$@"
+fi
+
+exec "$@"
