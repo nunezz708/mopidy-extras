@@ -14,18 +14,18 @@ RUN set -xv \
         #libdvdnav4 libglib2.0-data shared-mime-info xml-core file \
         #xdg-user-dirs \
         gosu \
+        wget \
  && : \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
  && :
 
-ADD https://apt.mopidy.com/mopidy.list /etc/apt/sources.list.d/mopidy.list
-ADD https://apt.mopidy.com/mopidy.gpg /tmp/mopidy.gpg
-
 ENV APP_USER=app \
     APP_HOME=/app
 
 RUN set -xv \
+ && wget -qO /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/mopidy.list \
+ && wget -qO /tmp/mopidy.gpg https://apt.mopidy.com/mopidy.gpg \
  && apt-key add /tmp/mopidy.gpg \
  && : \
  && apt-get update \
@@ -112,8 +112,8 @@ ENV PULSE_SERVER="tcp:0.0.0.0:4713" \
     XDG_CONFIG_HOME="$APP_HOME/.config" \
     XDG_CACHE_HOME="$APP_HOME/.cache" \
     XDG_DATA_HOME="$APP_HOME/.local/share" \
-    XDG_MUSIC_DIR="$APP_HOME/Music" \
-    XDG_RUNTIME_DIR="/run/user/1000"
+    XDG_MUSIC_DIR="$APP_HOME/Music"
+    #XDG_RUNTIME_DIR="/run/user/1000"
 
 VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
 

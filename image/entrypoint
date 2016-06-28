@@ -8,15 +8,23 @@ case "$1" in
 			*compose*)        file=docker-compose.yml ;;
 			*readme*|*help*)  file=README.md ;;
 		esac
+		absfile="$APP_HOME/host/$file"
 
-		file="$APP_HOME/host/$file"
+		case "${file,,}" in
+			run)
+				echo -e "#!/bin/bash\nmain() {\n"
+				cat "$absfile"
+				echo -e "\n}\nmain" '"$@"' "${@:3}"
+				exit 0
+				;;
+		esac
 
-		if [[ ! -f "$file" ]]; then
-			echo "File $file not found." >&2
+		if [[ ! -f "$absfile" ]]; then
+			echo "File $absfile not found." >&2
 			exit 1
 		fi
 
-		exec cat "$file"
+		exec cat "$absfile"
 		;;
 	-*)
 		# If we're just given options, prefix mopidy

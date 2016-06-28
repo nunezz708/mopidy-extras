@@ -3,35 +3,38 @@
 # ~ start a mopidy container using sane defaults.
 #
 set -eo pipefail
+set -xv
 
-: ${NAME:='mopidy'}
-: ${IMAGE:='trevorj/mopidy-extras:develop'}  # remove :develop for stable (:latest)
+: ${name:='mopidy'}
+: ${image:='trevorj/mopidy-extras:develop'}  # remove :develop for stable (:latest)
 
-: ${MEDIA_DIR:="$(xdg-user-dir MUSIC)"}
-: ${DATA_DIR:="$(xdg-user-dir DATA)/mopidy"}
-: ${CONFIG_DIR:="$(xdg-user-dir CONFIG)/mopidy"}
+: ${media_dir:="$(xdg-user-dir MUSIC)"}
+: ${data_dir:="$(xdg-user-dir DATA)/mopidy"}
+: ${config_dir:="$(xdg-user-dir CONFIG)/mopidy"}
 
-: ${DISPLAY:=':0.0'}
-: ${PULSE_COOKIE_DATA:="$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*')"}
-: ${PULSE_SERVER:='tcp:0.0.0.0:4713'}
+: ${pulse_cookie_data:="$(DISPLAY="${DISPLAY:-:0.0}" pax11publish -d | grep -Po '(?<=^Cookie: ).*')"}
+#: ${pulse_server:='tcp:0.0.0.0:4713'}
 
-set -v
+args=()
+
+[[ -z "$pulse_cookie_data" ]] || args+=(-e PULSE_COOKIE_DATA="$pulse_cookie_data")
+[[ -z "$pulse_server" ]] || args+=(-e PULSE_SERVER="$pulse_server")
+
+[[ -z "$media_dir" ]]  || args+=(-v "$media_dir:$app_home/Music")
+[[ -z "$data_dir" ]]   || args+=(-v "$data_dir:$app_home/.local/share/mopidy")
+[[ -z "$config_dir" ]] || args+=(-v "$config_dir:$app_home/.config/mopidy")
 
 # pull image first to minimize downtime.
-docker pull "$IMAGE"
+$dry docker pull "$image"
 
 # stop and remove any existing.
-for i in stop rm; do docker $i "$NAME" || :; done
+for i in stop rm; do $dry docker $i "$name" || :; done
 
-# run container in the background.
-docker run -d \
-      --name="$NAME" \
-      --hostname="$NAME" \
+# run container
+$dry docker run -d \
+      --name="$name" \
+      --hostname="$HOST" \
       --net=host \
-      -e PULSE_SERVER \
-      -e PULSE_COOKIE_DATA \
-      -v "$MEDIA_DIR":"$APP_HOME/Music" \
-      -v "$CONFIG_DIR":"$APP_HOME/.config/mopidy" \
-      -v "$DATA_DIR":"$APP_HOME/.local/share/mopidy" \
-      "$IMAGE" \
+      "${args[@]}" \
+      "$image" \
       "$@"
