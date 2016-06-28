@@ -1,9 +1,32 @@
 #!/bin/bash
 set -e
 
+case "$1" in
+	host)
+		file=$(basename "$2")
+		case "${file,,}" in
+			*compose*)        file=docker-compose.yml ;;
+			*readme*|*help*)  file=README.md ;;
+		esac
+
+		file="$APP_HOME/host/$file"
+
+		if [[ ! -f "$file" ]]; then
+			echo "File $file not found." >&2
+			exit 1
+		fi
+
+		exec cat "$file"
+		;;
+	-*)
+		# If we're just given options, prefix mopidy
+		set -- mopidy "$@"
+		;;
+esac
+
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
-    mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy >&2
-    chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy} >&2
+    mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
+    chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
 
     export ${!*} _SENTINEL=true
     exec gosu "$APP_USER" "$0" "$@"
@@ -18,30 +41,4 @@ if [[ -n "$PULSE_COOKIE_DATA" ]]; then
     echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >"$PULSE_COOKIE"
 fi
 
-main() {
-    case "$1" in
-        -*)
-            # If we're just given options, prefix mopidy
-            set -- mopidy "$@"
-            ;;
-        host)
-            file=$(basename "$2")
-            case "${file,,}" in
-                *compose*)        file=docker-compose.yml ;;
-                *readme*|*help*)  file=README.md ;;
-            esac
-
-            file="$APP_HOME/host/$file"
-
-            if [[ ! -f "$file" ]]; then
-                echo "File $file not found." >&2
-                exit 1
-            fi
-
-            set -- cat "$file"
-            ;;
-    esac
-    exec "$@"
-}
-
-main "$@"
+exec "$@"
