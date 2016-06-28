@@ -12,10 +12,9 @@ case "$1" in
 
 		case "${file,,}" in
 			run)
-				absfile=run
 				echo -e "#!/bin/bash\nmain() {\n"
 				cat "$absfile"
-				echo -e "\n}\nmain" "$@" '"$@"'
+				echo -e "\n}\nmain" '"$@"' "${@:3}"
 				exit 0
 				;;
 		esac
