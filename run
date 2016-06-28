@@ -34,4 +34,4 @@ docker run -d \
       -v "$CONFIG_DIR":"$APP_HOME/.config/mopidy" \
       -v "$DATA_DIR":"$APP_HOME/.local/share/mopidy" \
       "$IMAGE" \
-	  "$@"
+      "$@"
