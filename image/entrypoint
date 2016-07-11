@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 case "$1" in
 	host)
@@ -33,9 +33,10 @@ case "$1" in
 esac
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
+    userdel "$APP_USER" 2>&1 >/dev/null || :
 	useradd -U -G audio -d "$APP_HOME" -s /bin/bash -M -o -u "$APP_UID" "$APP_USER"
     mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
-    chown -c "$APP_USER" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
+    chown -c "$APP_USER" "$APP_HOME" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
 
     export ${!*} _SENTINEL=true
     exec gosu "$APP_USER" "$0" "$@"

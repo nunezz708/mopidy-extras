@@ -3,7 +3,6 @@
 # ~ start a mopidy container using sane defaults.
 #
 set -eo pipefail
-set -xv
 
 : ${name:='mopidy'}
 : ${image:='trevorj/mopidy-extras:develop'}  # remove :develop for stable (:latest)
