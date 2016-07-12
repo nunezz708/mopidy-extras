@@ -1,0 +1,6 @@
+#!/bin/bash
+set -eo pipefail
+set +xv
+
+# This is really, really fucking gross, why does Docker hub not support decent auth again?
+exec docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS"

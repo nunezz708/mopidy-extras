@@ -1,0 +1,23 @@
+machine:
+  services:
+    - docker
+
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init
+
+dependencies:
+  override:
+    - ./circle/step build
+
+test:
+  override:
+    - ./circle/step test
+
+deployment:
+  hub:
+    branch: /.*/
+    owner: akatrevorjay
+    commands:
+      - ./circle/step push
