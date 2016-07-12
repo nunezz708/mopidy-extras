@@ -7,13 +7,13 @@ RUN image-prep
 ENV APP_USER=app \
     APP_HOME=/app
 
-RUN set -xv \
+RUN set -exv \
  && lazy-apt --no-install-recommends \
       gstreamer1.0-alsa gstreamer1.0-pulseaudio gstreamer1.0-tools \
       xdg-user-dirs xdg-utils \
  && :
 
-RUN set -xv \
+RUN set -exv \
  && curl -sL https://apt.mopidy.com/mopidy.gpg \
     | apt-key add - \
  && lazy-apt-repo mopidy https://apt.mopidy.com/mopidy.list \
@@ -22,7 +22,7 @@ RUN set -xv \
         $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'mpris|doc') \
  && :
 
-RUN set -xv \
+RUN set -exv \
  && cleanup=no lazy-apt --no-install-recommends \
         python-ndg-httpsclient \
         python-openssl \
