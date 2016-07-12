@@ -18,8 +18,7 @@ RUN set -exv \
     | apt-key add - \
  && lazy-apt-repo mopidy https://apt.mopidy.com/mopidy.list \
  && lazy-apt --no-install-recommends \
-        mopidy \
-        $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'mpris|doc') \
+        mopidy'.*' \
  && :
 
 RUN set -exv \
