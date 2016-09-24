@@ -51,7 +51,7 @@ RUN set -exv \
         mopidy-notifier \
         Mopidy-Webhooks \
         Mopidy-AudioAddict \
-        Mopidy-LeftAsRain \
+        #Mopidy-LeftAsRain \
         Mopidy-Party \
         #Mopidy-Headless \
         #Mopidy-Cd \
