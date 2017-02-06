@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
     mopidy:
         image: trevorj/mopidy-extras:develop  # latest == stable; use :develop for development version
