@@ -46,4 +46,5 @@ ADD run docker-compose.yml README.md $APP_ROOT/host/
 USER root
 
 # Healthcheck on the HTTP port
-HEALTHCHECK --interval=5m --timeout=3s CMD curl -sSLf http://localhost:6680
+# Disabled: Fucking Circle is so out of date. Ugh.
+#HEALTHCHECK --interval=5m --timeout=3s CMD curl -sSLf http://localhost:6680
