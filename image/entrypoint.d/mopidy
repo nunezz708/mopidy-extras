@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+. "$IMAGE_ROOT/lib.sh"
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
 	(
@@ -15,6 +16,8 @@ if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
     exec gosu "$APP_USER" "$0" "$@"
 fi
 
+debug "Running as $USER"
+
 if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
     cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf" >&2
 fi
@@ -24,4 +27,4 @@ if [[ -n "$PULSE_COOKIE_DATA" ]]; then
     echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >"$PULSE_COOKIE"
 fi
 
-exec "$@"
+debug_call exec "$@"

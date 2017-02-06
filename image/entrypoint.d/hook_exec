@@ -1,0 +1,9 @@
+#!/bin/bash
+
+case "$1" in
+	-*)
+		# If we're just given options, prefix mopidy
+		debug "Prepending mopidy to command: %s" "$entrypoint_command[*]}"
+		entrypoint_command=(mopidy "${entrypoint_command[@]}")
+		;;
+esac
