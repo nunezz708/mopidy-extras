@@ -1,0 +1,27 @@
+#!/bin/bash
+set -eo pipefail
+
+if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
+	(
+		exec >&2
+    	userdel "$APP_USER" >/dev/null 2>&1 || :
+		useradd -U -G audio -d "$APP_ROOT" -s /bin/bash -M -o -u "$APP_UID" "$APP_USER"
+    	mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
+    	chown -c "$APP_USER" "$APP_ROOT" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
+    )
+
+    debug "Delevating privileges to $APP_USER($APP_UID)"
+    export ${!*} _SENTINEL=true
+    exec gosu "$APP_USER" "$0" "$@"
+fi
+
+if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
+    cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf" >&2
+fi
+
+if [[ -n "$PULSE_COOKIE_DATA" ]]; then
+    : ${PULSE_COOKIE:="$HOME/pulse.cookie"}
+    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >"$PULSE_COOKIE"
+fi
+
+exec "$@"

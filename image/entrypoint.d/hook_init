@@ -1,0 +1,8 @@
+#!/bin/bash
+
+case "$1" in
+	-*)
+		# If we're just given options, prefix mopidy
+		set -- mopidy "$@"
+		;;
+esac
