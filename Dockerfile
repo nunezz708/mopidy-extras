@@ -19,7 +19,7 @@ RUN lazy-apt-with --no-install-recommends \
     libssl-dev \
     libffi-dev \
     libgmp-dev \
- -- install-reqs requirements/install.pip \
+ -- install-reqs requirements/install.pip
 
 COPY image image
 
