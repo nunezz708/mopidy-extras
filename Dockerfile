@@ -44,4 +44,3 @@ ADD run docker-compose.yml README.md $APP_ROOT/host/
 
 # delevate down to $APP_USER in entrypoint after fixing up perms
 USER root
-
