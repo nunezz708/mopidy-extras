@@ -1,4 +1,4 @@
-FROM trevorj/boilerplate:yakkety
+FROM trevorj/boilerplate:zesty
 MAINTAINER Trevor Joynson <docker@trevor.joynson.io>
 
 COPY requirements/base.* requirements/
