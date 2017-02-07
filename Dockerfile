@@ -40,7 +40,7 @@ VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
 EXPOSE 6600 6680
 ENTRYPOINT ["entrypoint", "mopidy"]
 
-ADD run docker-compose.yml README.md $APP_ROOT/host/
+ADD run docker-compose.yml README.md ./host/
 
 # delevate down to $APP_USER in entrypoint after fixing up perms
 USER root
