@@ -16,7 +16,7 @@ if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
     exec gosu "$APP_USER" "$0" "$@"
 fi
 
-debug "Running as $USER"
+debug "Running as: $(id -un)"
 
 if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
     cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf" >&2
