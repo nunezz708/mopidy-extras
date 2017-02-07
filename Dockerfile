@@ -38,7 +38,7 @@ ENV PULSE_SERVER="tcp:localhost:4713" \
 VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
 
 EXPOSE 6600 6680
-ENTRYPOINT ["entrypoint", "mopidy"]
+CMD ["mopidy"]
 
 ADD run docker-compose.yml README.md ./host/
 
