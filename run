@@ -22,7 +22,6 @@ args=()
 [[ -z "$media_dir" ]]  || args+=(-v "$media_dir:$app_home/Music")
 [[ -z "$data_dir" ]]   || args+=(-v "$data_dir:$app_home/.local/share/mopidy")
 [[ -z "$config_dir" ]] || args+=(-v "$config_dir:$app_home/.config/mopidy")
-
 # pull image first to minimize downtime.
 $dry docker pull "$image"
 
@@ -34,6 +33,8 @@ $dry docker run -d \
       --name="$name" \
       --hostname="$HOST" \
       --net=host \
+      -e DEBUG \
+      -e TRACE \
       "${args[@]}" \
       "$image" \
       "$@"
