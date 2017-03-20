@@ -11,7 +11,10 @@ jobs:
       - run:
           name: checkout-submodules
           command: |
-              git submodule sync && git submodule update --init
+            set -eo pipefail
+            set -xv
+            git submodule sync
+            git submodule update --init
 
       - setup_docker_engine
 
@@ -25,4 +28,10 @@ jobs:
 
       - deploy:
           name: push
-          command: ./.circleci/step push
+          command: |
+            set -eo pipefail
+            set -xv
+            case "$CIRCLE_BRANCH" in
+                *)
+                  ./.circleci/step push ;;
+            esac
