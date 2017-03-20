@@ -1,0 +1,28 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: trevorj/circleci-builder:latest
+    working_directory: /app
+
+    steps:
+      - checkout
+      - run:
+          name: checkout-submodules
+          command: |
+              git submodule sync && git submodule update --init
+
+      - setup_docker_engine
+
+      - run:
+          name: build
+          command: ./.circleci/step build
+
+      - run:
+          name: test
+          command: ./.circleci/step test
+
+      - deploy:
+          name: push
+          command: ./.circleci/step push
