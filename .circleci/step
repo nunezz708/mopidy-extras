@@ -2,8 +2,6 @@
 set -eo pipefail
 set -xv
 
-PATH="$PWD/circle:$PATH"
-
 if [[ -n "$CIRCLE_PR_NUMBER" ]]; then
     echo "Running for a PR? Nope." >&2
     exit 403
@@ -37,7 +35,9 @@ case "$1" in
         :
         ;;
     push)
-        docker-login
+        # This is really, really fucking gross, why does Docker hub not support decent auth again?
+        docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS"
+
         for tag in "${tags[@]}"; do
             docker tag "$build_image" "$push_repo:$tag"
             docker push "$push_repo:$tag"
