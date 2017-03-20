@@ -31,6 +31,7 @@ jobs:
           command: |
             set -eo pipefail
             set -xv
+            export ${!*}
             case "$CIRCLE_BRANCH" in
                 *)
                   ./.circleci/step push ;;
