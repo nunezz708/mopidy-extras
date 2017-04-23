@@ -2,10 +2,10 @@
 set -eo pipefail
 . "$IMAGE_ROOT/lib.sh"
 
-for homek in "${!XDG_@_HOME}"; do
-    dirk="${homek%_HOME}_DIR"
-    declare -n homev="$homek" dirv="$dirk"
-    : ${dirv:="$homev"}
+for xdg_k_dir in "${!XDG_@_DIR}"; do
+    xdg_k_home="${xdg_k_dir%_DIR}_HOME"
+    declare -n xdg_v_dir="$xdg_k_dir" xdg_v_home="$xdg_k_home"
+    : ${xdg_v_dir:="$xdg_v_home"}
 done
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
@@ -13,8 +13,8 @@ if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
 		exec >&2
     	userdel "$APP_USER" >/dev/null 2>&1 || :
 		useradd -U -G audio -d "$APP_ROOT" -s /bin/bash -M -o -u "$APP_UID" "$APP_USER"
-    	mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
-    	chown -c "$APP_USER" "$APP_ROOT" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
+    	mkdir -pv {"$XDG_CONFIG_DIR","$XDG_DATA_DIR"}/mopidy
+    	chown -c "$APP_USER" "$APP_ROOT" {"$XDG_CONFIG_DIR","$XDG_DATA_DIR"}{,/mopidy}
     )
 
     debug "Delevating privileges to $APP_USER($APP_UID)"
@@ -24,8 +24,8 @@ fi
 
 debug "Running as: $(id -un)"
 
-if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
-    cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf" >&2
+if [[ ! -f "$XDG_CONFIG_DIR/mopidy/mopidy.conf" ]]; then
+    cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_DIR/mopidy/mopidy.conf" >&2
 fi
 
 if [[ -n "$PULSE_COOKIE_DATA" ]]; then

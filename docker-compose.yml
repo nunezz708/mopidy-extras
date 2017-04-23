@@ -11,20 +11,20 @@ services:
             - $HOME/.local/share/mopidy:/app/.local/share/mopidy
             - $HOME/.config/mopidy:/app/.config/mopidy
             # --- or maybe ---
-            #- $XDG_DATA_HOME/mopidy:/app/.local/share/mopidy
-            #- $XDG_CONFIG_HOME/mopidy:/app/.config/mopidy
+            #- $XDG_DATA_DIR/mopidy:/app/.local/share/mopidy
+            #- $XDG_CONFIG_DIR/mopidy:/app/.config/mopidy
 
             # (Optional) Local media directory
             - $HOME/Music:/app/Music:ro
             # --- or maybe ---
-            #- $XDG_MUSIC_HOME:/app/Music:ro
+            #- $XDG_MUSIC_DIR:/app/Music:ro
         
             # Forward local pulseaudio (mmm cookies)
             # Alternatively, you may specify PULSE_COOKIE_DATA environment variable which will
             # write this file out.
             - $HOME/.config/pulse:/app/.config/pulse
             # --- or maybe ---
-            #- $XDG_CONFIG_HOME/pulse:/app/.config/pulse
+            #- $XDG_CONFIG_DIR/pulse:/app/.config/pulse
         environment:
             - PULSE_SERVER
             - PULSE_COOKIE_DATA
