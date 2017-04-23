@@ -2,9 +2,6 @@
 set -eo pipefail
 . "$IMAGE_ROOT/lib.sh"
 
-: ${XDG_CONFIG_DIR:="$XDG_CONFIG_HOME"}
-: ${XDG_DATA_DIR
-
 for homek in "${!XDG_@_HOME}"; do
     dirk="${homek%_HOME}_DIR"
     declare -n homev="$homek" dirv="$dirk"
