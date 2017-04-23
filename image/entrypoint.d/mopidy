@@ -4,15 +4,13 @@ set -eo pipefail
 
 # God knows what XDG var mopidy looks at this week, so just alias them all to each other. Ugh.
 for xdg_k in "${!XDG_@}"; do
-    [[ -n "${!xdg_k}" ]] || continue
-
     case "$xdg_k" in
     	*_HOME) xdg_alt_k="${xdg_k%_*}_DIR" ;;
     	*_DIR)  xdg_alt_k="${xdg_k%_*}_HOME" ;;
     	*)	continue ;;
     esac
 
-    [[ -n "${!xdg_alt_k}" ]] \
+    [[ -z "${!xdg_alt_k}" ]] \
     	|| declare -xn "$xdg_alt_k"="$xdg_k"
 done
 
@@ -21,8 +19,8 @@ if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then
 		exec >&2
     	userdel "$APP_USER" >/dev/null 2>&1 || :
 		useradd -U -G audio -d "$APP_ROOT" -s /bin/bash -M -o -u "$APP_UID" "$APP_USER"
-    	mkdir -pv {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}/mopidy
-    	chown -c "$APP_USER" "$APP_ROOT" {"$XDG_CONFIG_HOME","$XDG_DATA_HOME"}{,/mopidy}
+    	mkdir -pv {"$XDG_CONFIG_DIR","$XDG_DATA_DIR"}/mopidy
+    	chown -c "$APP_USER" "$APP_ROOT" {"$XDG_CONFIG_DIR","$XDG_DATA_DIR"}{,/mopidy}
     )
 
     debug "Delevating privileges to $APP_USER($APP_UID)"
@@ -32,8 +30,8 @@ fi
 
 debug "Running as: $(id -un)"
 
-if [[ ! -f "$XDG_CONFIG_HOME/mopidy/mopidy.conf" ]]; then
-    cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_HOME/mopidy/mopidy.conf" >&2
+if [[ ! -f "$XDG_CONFIG_DIR/mopidy/mopidy.conf" ]]; then
+    cp -av "$APP_ROOT/image/mopidy.conf" "$XDG_CONFIG_DIR/mopidy/mopidy.conf" >&2
 fi
 
 if [[ -n "$PULSE_COOKIE_DATA" ]]; then

@@ -28,14 +28,14 @@ USER $APP_USER
 ENV PULSE_SERVER="tcp:localhost:4713" \
     PULSE_COOKIE_DATA="" \
     PULSE_COOKIE="" \
-    XDG_CONFIG_HOME="$APP_ROOT/.config" \
-    XDG_CACHE_HOME="$APP_ROOT/.cache" \
-    XDG_DATA_HOME="$APP_ROOT/.local/share" \
+    XDG_CONFIG_DIR="$APP_ROOT/.config" \
+    XDG_CACHE_DIR="$APP_ROOT/.cache" \
+    XDG_DATA_DIR="$APP_ROOT/.local/share" \
     XDG_MUSIC_DIR="$APP_ROOT/Music" \
-    #XDG_RUNTIME_HOME="/run/user/1000" \
+    #XDG_RUNTIME_DIR="/run/user/1000" \
     APP_UID=1000
 
-VOLUME $XDG_DATA_HOME/mopidy $XDG_CONFIG_HOME
+VOLUME $XDG_DATA_DIR/mopidy $XDG_CONFIG_DIR
 
 EXPOSE 6600 6680
 CMD ["mopidy"]
