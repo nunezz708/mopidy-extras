@@ -2,10 +2,16 @@
 set -eo pipefail
 . "$IMAGE_ROOT/lib.sh"
 
-for xdg_k_dir in "${!XDG_@_DIR}"; do
-    xdg_k_home="${xdg_k_dir%_DIR}_HOME"
-    declare -n xdg_v_dir="$xdg_k_dir" xdg_v_home="$xdg_k_home"
-    : ${xdg_v_dir:="$xdg_v_home"}
+# God knows what XDG var mopidy looks at this week, so just alias them all to each other. Ugh.
+for xdg_k in "${!XDG_@}"; do
+    case "$xdg_k" in
+    	*_HOME) xdg_alt_k="${xdg_k%_*}_DIR" ;;
+    	*_DIR)  xdg_alt_k="${xdg_k%_*}_HOME" ;;
+    	*)	continue ;;
+    esac
+
+    [[ -z "${!xdg_alt_k}" ]] \
+    	|| declare -xn "$xdg_alt_k"="$xdg_k"
 done
 
 if [[ $UID -eq 0 && -z "$_SENTINEL" ]]; then

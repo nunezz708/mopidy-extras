@@ -18,7 +18,7 @@ services:
             - $HOME/Music:/app/Music:ro
             # --- or maybe ---
             #- $XDG_MUSIC_DIR:/app/Music:ro
-        
+
             # Forward local pulseaudio (mmm cookies)
             # Alternatively, you may specify PULSE_COOKIE_DATA environment variable which will
             # write this file out.
@@ -31,4 +31,3 @@ services:
         expose:
             - 6600
             - 6680
-
