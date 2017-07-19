@@ -8,6 +8,7 @@ RUN set -exv \
  && curl -sSLf https://apt.mopidy.com/mopidy.gpg \
     | apt-key add - \
  && lazy-apt-repo mopidy https://apt.mopidy.com/mopidy.list \
+ && ensure-apt-lists \
  && lazy-apt --no-install-recommends \
     $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'gpodder|doc') \
  && :
