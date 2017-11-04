@@ -1,0 +1,8 @@
+#!/bin/bash
+set -eo pipefail
+set -xv
+
+curl -sSLf https://apt.mopidy.com/mopidy.gpg \
+    | apt-key add -
+
+lazy-apt-repo mopidy https://apt.mopidy.com/mopidy.list

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -eo pipefail
+set -xv
+
+lazy-apt-with --no-install-recommends \
+    build-essential \
+    python-dev python-pip python-wheel \
+    libssl-dev \
+    libffi-dev \
+    libgmp-dev \
+ -- install-reqs requirements/*.pip

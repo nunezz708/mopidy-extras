@@ -1,0 +1,6 @@
+#!/bin/bash
+set -eo pipefail
+set -xv
+
+lazy-apt --no-install-recommends \
+    $(apt-cache search '^mopidy-.*' | sed -e 's/ .*$//' | egrep -v 'gpodder|doc')
