@@ -1,36 +1,59 @@
-version: '2.1'
+version: '2.2'
+
+volumes:
+  # Set this to your local media directory
+  media:
+    driver: local
+    driver_opts:
+      device: ~/Music
+      type: none
+      o: bind
+
+  # Forward local pulseaudio state directory so it can be imported.
+  # Alternatively, you may specify the PULSE_COOKIE_DATA environment variable
+  pulse:
+    driver: local
+    driver_opts:
+      device: ~/.config/pulse
+      type: none
+      o: bind
+
+  config:
+  data:
+  cache:
+
+networks:
+  host:
+    external: true
+
 services:
-    mopidy:
-        image: trevorj/mopidy-extras:develop  # latest == stable; use :develop for development version
-        # reasoning for net=host is to allow for data network broadcasts
-        # to work easily across the lan.
-        network_mode: host
-        hostname: mopidy
-        volumes:
-            # (Optional) Maintain state across runs.
-            - $HOME/.local/share/mopidy:/app/.local/share/mopidy
-            - $HOME/.config/mopidy:/app/.config/mopidy
-            # --- or maybe ---
-            #- $XDG_DATA_HOME/mopidy:/app/.local/share/mopidy
-            #- $XDG_CONFIG_HOME/mopidy:/app/.config/mopidy
+  mopidy:
+    build:
+      context: .
 
-            # (Optional) Local media directory
-            - $HOME/Music:/app/Music:ro
-            # --- or maybe ---
-            #- $XDG_MUSIC_DIR:/app/Music:ro
+    hostname: mopidy
+    container_name: mopidy
 
-            # Forward local pulseaudio (mmm cookies)
-            # Alternatively, you may specify PULSE_COOKIE_DATA environment variable which will
-            # write this file out.
-            - $HOME/.config/pulse:/app/.config/pulse
-            # --- or maybe ---
-            #- $XDG_CONFIG_HOME/pulse:/app/.config/pulse
-        environment:
-            - PULSE_SERVER
-            - PULSE_COOKIE_DATA
+    userns_mode: host
+    networks:
+      - host
 
-            - DEBUG=1
-            - VERBOSE=1
-        expose:
-            - 6600
-            - 6680
+    expose:
+      - 6600
+      - 6680
+      - 6681
+
+    volumes:
+      - .:/app
+      - config:/config
+      - data:/data
+      - cache:/cache
+      - pulse:/pulse:ro
+      - media:/media:ro
+
+    environment:
+      - PULSE_SERVER
+      - PULSE_COOKIE_DATA
+
+      - DEBUG=1
+      - VERBOSE=1

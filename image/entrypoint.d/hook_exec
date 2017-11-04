@@ -1,4 +1,20 @@
 #!/bin/bash
+
+if [[ ! -f "$CONFIG_DIR/mopidy.conf" ]]; then
+	e "Copying in example configuration"
+	cp -av "$APP_ROOT/image/mopidy.example.conf" "$CONFIG_DIR/mopidy.conf"
+fi
+
+if [[ -n "$PULSE_COOKIE_DATA" ]]; then
+	e "Writing pulseaudio cookie from env var PULSE_COOKIE_DATA"
+    : ${PULSE_COOKIE:="$HOME/pulse.cookie"}
+    echo -ne $(echo $PULSE_COOKIE_DATA | sed -e 's/../\\x&/g') >"$PULSE_COOKIE"
+elif [[ -f "$PULSE_DIR/cookie" ]]; then
+	e "Copying pulseaudio cookie from PULSE_DIR='%s'" "$PULSE_DIR"
+	mkdir -pv "$HOME/.config/pulse"
+	cp -v "$PULSE_DIR/cookie" "$HOME/.config/pulse/"
+fi
+
 case "${entrypoint_command[0]}" in
 	-*)
 		# If we're just given options, prefix mopidy
