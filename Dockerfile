@@ -1,4 +1,7 @@
-FROM trevorj/boilerplate:zesty
+ARG MOPIDY_XTRAS_PARENT_IMAGE="trevorj/boilerplate"
+ARG MOPIDY_XTRAS_PARENT_TAG="latest"
+FROM $MOPIDY_XTRAS_PARENT_IMAGE:$MOPIDY_XTRAS_PARENT_TAG
+
 MAINTAINER Trevor Joynson <docker@trevor.joynson.io>
 
 COPY requirements/base.* requirements/
