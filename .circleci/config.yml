@@ -12,27 +12,43 @@ jobs:
           name: checkout-submodules
           command: |
             set -eo pipefail
-            set -xv
             git submodule sync
             git submodule update --init
 
-      - setup_docker_engine
+      - setup_remote_docker:
+          version: 17.07.0-ce
 
       - run:
           name: build
-          command: ./.circleci/step build
+          command: |
+            set -eo pipefail
+            exec make -j8
 
       - run:
           name: test
-          command: ./.circleci/step test
+          command: |
+            set -eo pipefail
+            exec make test
+
+      - deploy:
+          name: docker-login
+          command: |
+            exec docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
 
       - deploy:
           name: push
           command: |
             set -eo pipefail
-            set -xv
-            export ${!*}
             case "$CIRCLE_BRANCH" in
-                *)
-                  ./.circleci/step push ;;
+                master)
+                  exec make -j8 push ;;
             esac
+
+workflows:
+  version: 2
+
+  build:
+    jobs:
+      - build:
+          context: org-global
+
